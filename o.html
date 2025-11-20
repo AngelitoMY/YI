@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Enojona</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: black;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      font-size: 3em;
+      text-align: center;
+      animation: colores 2s infinite;
+      color:#d23a81;
+    }
+
+    @keyframes colores {
+      0% { color: rgb(243, 70, 243); }
+      25% { color: rgb(193, 55, 232); }
+      50% { color: rgb(134, 61, 236); }
+      75% { color: rgb(95, 36, 233); }
+      100% { color: rgb(59, 26, 225); }
+    }
+
+    /* Bola de discoteca */
+    .bola {
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, silver, gray);
+      border-radius: 50%;
+      box-shadow: 0 0 20px white;
+      animation: girar 5s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes girar {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Confeti */
+    .confeti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: red;
+      animation: caer 5s linear infinite;
+    }
+
+    @keyframes caer {
+      from { transform: translateY(-100vh); }
+      to { transform: translateY(100vh); }
+    }
+  </style>
+</head>
+<body>
+  <div class="bola"></div>
+  <h1 id="titulo">Tinkerbell</h1>
+
+  <!-- Música -->
+  <audio id="musicaFiesta" loop></audio>
+
+  <script>
+    // Lista de canciones (Asegúrate de tener archivos .mp3 disponibles)
+    const canciones = [
+      { titulo: "Disfruta Tu dia", url: "Please Me.mp3" },   // Canción 1
+      { titulo: "Cuida a Toby", url: "Summer walker.mp3" },   // Canción 2
+      { titulo: "La pequeña ahora esta más grande", url: "Love Songs (Bonus).mp3" },   // Canción 3
+    ];
+
+    let indiceCancion = 0; // El índice de la canción actual
+    const audio = document.getElementById("musicaFiesta");
+    const titulo = document.getElementById("titulo");
+
+    // Función para cargar y reproducir la canción
+    function cargarCancion() {
+      const cancion = canciones[indiceCancion];
+      audio.src = cancion.url;  // Cambia la fuente del audio
+      audio.play().catch(err => console.log("Autoplay bloqueado:", err));  // Reproduce la canción
+      titulo.textContent = cancion.titulo;  // Cambia el título en la página
+    }
+
+    // Cambiar a la siguiente canción cuando termine la actual
+    audio.addEventListener('ended', function() {
+      // Avanza al siguiente índice, y se reinicia cuando llega al final
+      indiceCancion = (indiceCancion + 1) % canciones.length;  
+      cargarCancion();
+    });
+
+    // Función para cambiar a la siguiente canción con la flecha derecha
+    function siguienteCancion() {
+      // Avanza al siguiente índice, y se reinicia cuando llega al final
+      indiceCancion = (indiceCancion + 1) % canciones.length;
+      cargarCancion();
+    }
+
+    // Detectar las teclas presionadas (en este caso, flecha derecha)
+    window.addEventListener('keydown', function(event) {
+      if (event.key === "ArrowRight") {
+        siguienteCancion(); // Cambia a la siguiente canción
+      }
+    });
+
+    // Cargar la primera canción al inicio
+    window.onload = function() {
+      cargarCancion();
+
+      // Generar confeti dinámico
+      for (let i = 0; i < 50; i++) {
+        const confeti = document.createElement("div");
+        confeti.className = "confeti";
+        confeti.style.left = Math.random() * window.innerWidth + "px";
+        confeti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        confeti.style.animationDuration = (3 + Math.random() * 3) + "s";
+        document.body.appendChild(confeti);
+      }
+    };
+  </script>
+</body>
+</html>
